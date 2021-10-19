@@ -5,6 +5,7 @@ import sys
 from io import StringIO
 import contextlib
 
+
 app = Flask(__name__)
 cors = CORS(app, resources={r"/tester": {"origins": "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -34,21 +35,21 @@ def getDefault():
     return jsonify({'response': 'Hello to my users api!'})
 
 #Testing Route
-@app.route('/tester', methods=['POST'])
+@app.route('/tester', methods=['POST']) # can be distinguished request.method == 'POST'
 def tester():
-    inputs = request.json['inputs']
-    solutions = request.json['solutions']
     """
-    Example
+    Example:
     {
-	"inputs": [0,1,2,3],
-	"solutions": [0,1,2,3],
-	"code": "ls = inputs\n    output = []\n    for i in ls:\n        output.append(i)"
+        "inputs": [0,1,2,3],
+        "solutions": [0,1,2,3],
+        "code": "ls = inputs\n    output = []\n    for i in ls:\n        output.append(i)"
     }
     """
+    inputs = request.json['inputs']
+    solutions = request.json['solutions']
     code = request.json['code']
-
     code2 = code.splitlines()
+
     program_parsed = ""
     for i in code2:
         program_parsed += "    " + i + "\n"
@@ -59,4 +60,5 @@ def tester():
 
 
 if __name__ == '__main__':
+    #print(sys.path)
     app.run(debug=True, port=8000)
