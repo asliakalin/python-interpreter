@@ -19,11 +19,13 @@ def execute_code(code, inputs, solutions):
     cons = ""
     res_list = []
     te = 1
+    correct, wrong, tot = 0, 0, len(solutions)
     for index in range(len(inputs)):
         i = inputs[index]
         sol = solutions[index]
         if te != 1: res += "\n"
         res += "$> ---------------- TEST #" + str(te) + " ------------------\nTest Input = " + str(i) + "\nExpected Output: " + str(sol) + "\n"
+        cons += "$> ---------------- TEST #" + str(te) + " ------------------\n"
         aux = {}
         try:
             codeObejct = compile("input = " + str(i) + "\n" + code, 'sumstring', 'exec')
@@ -32,19 +34,26 @@ def execute_code(code, inputs, solutions):
             return_workaround = loc['output']
             to_print = loc['to_print']
             for printer in to_print:
-                cons += str(printer)
-            cons += + " \n-----------------------------------\n"
+                cons += str(printer) + "\n"
             res +=  "Your Output: " + str(return_workaround)
-            res += "\nTEST FAILED." if str(sol) != str(return_workaround) else "\nTEST PASSED."
-
+            failed = str(sol) != str(return_workaround)
+            res += "\nTEST FAILED." if failed else "\nTEST PASSED."
+            wrong += 1 if failed else 0
+            correct += 1 if not failed else 0
             res_list.append(return_workaround)
+            cons = cons.replace("to_print.append", "print")
+
+
+
 
         except SyntaxError as err:
             error_class = err.__class__.__name__
             line_number = err.lineno
             detail = err.args[0]
-
-            res += "\nERROR: %s on line %d.\n>>> %s" % (error_class, line_number-2, detail) + "\nTEST FAILED."
+            if str("'return' outside function") in str(detail):
+                res += "\nERROR: Extra 'return' statement on line %s.\n>>> The function is given with a 'return output' statement on the last line." % str(line_number-2)
+            else:
+                res += "\nERROR: %s on line %d.\n>>> %s" % (error_class, line_number-2, detail)
             break
         except Exception as err:
             error_class = err.__class__.__name__
@@ -53,17 +62,17 @@ def execute_code(code, inputs, solutions):
             line_number = traceback.extract_tb(tb)[-1][1]
             if str("'return' outside function") in str(detail):
                 res += "\nERROR: Unexpected 'return' statement.\n>>> You do not need to include a return statement as'return outputs' is given as the last line of code."
-            elif (str(detail) == "output"):
-                res += "\nERROR: Internal-API Error.\nPlease contact the organizers if repeated."
+            elif (str(detail) == "output"): #KeyError
+                res += "\nERROR: %s\nMake sure you are asigning a value to `output`." % (str(error_class))
             else:
-                res = res + "\nERROR: %s on line %d.\n>>> %s ." % (str(error_class), line_number-2,detail) + "\nTEST FAILED."
-            
-                
+                res = res + "\nERROR: %s on line %d.\n>>> %s ." % (str(error_class), line_number-2,detail)
+
+
             break
 
         te += 1
 
-    return (res, res_list, cons)
+    return (res, res_list, cons, correct, wrong, tot)
 
 #Testing Route
 @app.route('/', methods=['GET'])
@@ -91,7 +100,7 @@ def tester():
     equal = True
     if var[1] != solutions:
         equal = False
-    return jsonify({'prints': var[2], 'console':var[0], 'result':equal, 'solution': var[1], })
+    return jsonify({'prints': var[2], 'console':var[0], 'result':equal, 'solution': var[1], 'correct':var[3], 'wrong':var[4], 'tot':var[5] })
 
 
 if __name__ == '__main__':
