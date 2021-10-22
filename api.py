@@ -17,6 +17,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def execute_code(code, inputs, solutions):
     res = ""
     cons = ""
+    print_output = ""
     res_list = []
     te = 1
     correct, wrong, tot = 0, 0, len(solutions)
@@ -24,9 +25,8 @@ def execute_code(code, inputs, solutions):
         i = inputs[index]
         sol = solutions[index]
         if te != 1: res += "\n"
-        res += "$> ---------------- TEST #" + str(te) + " ------------------\nTest Input = " + str(i) + "\nExpected Output: " + str(sol) + "\n"
-        cons += "$> ---------------- TEST #" + str(te) + " ------------------\n"
-        aux = {}
+        res += "------------------ TEST #" + str(te) + ": input = " + str(i) + " --------------------"
+        print_output = ""
         try:
             codeObejct = compile("input = " + str(i) + "\n" + code, 'sumstring', 'exec')
             loc = {}
@@ -34,14 +34,20 @@ def execute_code(code, inputs, solutions):
             return_workaround = loc['output']
             to_print = loc['to_print']
             for printer in to_print:
-                cons += str(printer) + "\n"
-            res +=  "Your Output: " + str(return_workaround)
+                print_output += "> "+str(printer) + "\n"
+            res +=  "\nExpected output to be: " + str(sol) + ".\nYour code returned: " + str(return_workaround)
             failed = str(sol) != str(return_workaround)
-            res += "\nTEST FAILED." if failed else "\nTEST PASSED."
+            if failed:
+                if index != (len(inputs)-1):
+                    cons += "Failed Test #" + str(te) + "\n"
+                else:
+                    cons += "Failed Test #" + str(te)
+            res += "\nTEST FAILED.\n\n" if failed else "\nTEST PASSED.\n\n"
+            res += "Print Output:\n" + print_output
             wrong += 1 if failed else 0
             correct += 1 if not failed else 0
             res_list.append(return_workaround)
-            cons = cons.replace("to_print.append", "print")
+            res = res.replace("to_print.append", "print")
 
 
 
@@ -89,9 +95,9 @@ def tester():
     """
     Example
     {
-	"inputs": [0,1,2,3],
-	"solutions": [0,2,4,6],
-	"code": "output = input*2"
+    "inputs": [0,1,2,3],
+    "solutions": [0,2,4,6],
+    "code": "output = input*2"
     }
     """
 
