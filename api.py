@@ -28,7 +28,7 @@ def execute_code(code, inputs, solutions):
         res += "------------------ TEST #" + str(te) + ": input = " + str(i) + " --------------------"
         print_output = ""
         try:
-            codeObejct = compile("input = " + str(i) + "\n" + code, 'sumstring', 'exec')
+            codeObejct = compile("inp = " + str(i) + "\n" + code, 'sumstring', 'exec')
             loc = {}
             exec(codeObejct, globals(), loc)
             return_workaround = loc['output']
@@ -83,7 +83,7 @@ def execute_code(code, inputs, solutions):
 #Testing Route
 @app.route('/', methods=['GET'])
 def getDefault():
-    return jsonify({'response': 'Hello to my users api!'})
+    return jsonify({'Asli says hello!': 'This is my python interpreter API. I use it for a pair programming platform I am working on.'})
 
 #Testing Route
 @app.route('/tester', methods=['POST'])
