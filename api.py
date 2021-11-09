@@ -57,7 +57,7 @@ def execute_code(code, inputs, solutions):
             line_number = err.lineno
             detail = err.args[0]
             if str("'return' outside function") in str(detail):
-                res += "\nERROR: Extra 'return' statement on line %s.\n>>> The function is given with a 'return output' statement on the last line." % str(line_number-2)
+                res += "\nERROR: Extra 'return' statement on line %s.\n>>> Don't include a return statement in your code. The statement'return output' is given." % str(line_number-2)
             else:
                 res += "\nERROR: %s on line %d.\n>>> %s" % (error_class, line_number-2, detail)
             break
@@ -67,7 +67,7 @@ def execute_code(code, inputs, solutions):
             cl, exc, tb = sys.exc_info()
             line_number = traceback.extract_tb(tb)[-1][1]
             if str("'return' outside function") in str(detail):
-                res += "\nERROR: Unexpected 'return' statement.\n>>> You do not need to include a return statement as'return outputs' is given as the last line of code."
+                res += "\nERROR: Unexpected 'return' statement.\n>>> Don't include a return statement in your code. The statement'return output' is given."
             elif (str(detail) == "output"): #KeyError
                 res += "\nERROR: %s\nMake sure you are asigning a value to `output`." % (str(error_class))
             else:
@@ -80,12 +80,11 @@ def execute_code(code, inputs, solutions):
 
     return (res, res_list, cons, correct, wrong, tot)
 
-#Testing Route
+
 @app.route('/', methods=['GET'])
 def getDefault():
     return jsonify({'Asli says hello!': 'This is my python interpreter API. I use it for a pair programming platform I am working on.'})
 
-#Testing Route
 @app.route('/tester', methods=['POST'])
 def tester():
     inputs = request.json['inputs']
