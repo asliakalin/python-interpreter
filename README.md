@@ -1,5 +1,10 @@
 # Python Interpreter
 
+## Intro & Motivation: 
+As a part of my master's program I am conducting my research on pair programming, and specifically distributed pair programming settings (where partners are paired remotely, relying on a shared code editor and a chat window while working on a task together). In order to run this study and convert it into my master's thesis, I started with creating a standalone platform for distributed pair programming that can sign new participants, create and manage pairing process, evaluate code and run autograder tests as well as collecting data from  paired programing sessions.
+
+Although the source code of this project is currently stored in private repositories (at least until I finish running the study with real participants) I decided to use an API to evaluate python code that participants type in the shared editor. Here is some information about this API that is currently being hosted at http://asliakalin.pythonanywhere.com/
+
 ## A. PythonAnywhere
 Here is the steps I followed while writing my own python interpreter api.
 ### 1. Create a new project, in the project directory:
