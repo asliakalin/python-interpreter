@@ -103,7 +103,7 @@ def tester():
     var = execute_code("to_print = []\n" + code.replace("print", "to_print.append"), inputs, solutions)
 
     equal = True
-    if var[1] != solutions:
+    if var[1] != solutions and var[3]!=var[5]:
         equal = False
     return jsonify({'prints': var[2], 'console':var[0], 'result':equal, 'solution': var[1], 'correct':var[3], 'wrong':var[4], 'tot':var[5] })
 
